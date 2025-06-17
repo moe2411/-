@@ -230,7 +230,6 @@ function submitForm() {
 
   const GAS_URL = "https://script.google.com/macros/s/AKfycbzh88gqfQeJDw2EgxLEKYT3AzYarcqnv8hu2EN5gwRSznxmjQPZt23FIyIfLt8-gIEryw/exec";
 
-  // フォームデータ形式で送信
   const payload = new URLSearchParams();
   payload.append("employeeId", employeeId);
   payload.append("name", name);
@@ -240,17 +239,17 @@ function submitForm() {
   fetch(GAS_URL, {
     method: "POST",
     body: payload,
-    mode: "no-cors" // ←これでプリフライトを避ける
+    mode: "no-cors"  // 必要に応じて変更可能
+  })
+  .then(() => {
+    alert("申請を送信しました（レスポンスは取得できません）");
+    window.location.reload();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("送信に失敗しました。");
   });
-
-  alert("申請を送信しました（レスポンスは取得できません）");
-  window.location.reload();
 }
-        .catch(err => {
-          console.error(err);
-          alert("送信に失敗しました。");
-        });
-    }
   </script>
 </body>
 </html>
