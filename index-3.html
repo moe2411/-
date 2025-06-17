@@ -203,42 +203,49 @@
       row.remove();
     }
 
-    function submitForm() {
-      const employeeId = document.getElementById('employeeId').value.trim();
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();  
-      const rows = document.querySelectorAll('#leaveBody tr');
-      let leaveList = [];
+function submitForm() {
+  const employeeId = document.getElementById('employeeId').value.trim();
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();  
+  const rows = document.querySelectorAll('#leaveBody tr');
+  let leaveList = [];
 
-      if (!employeeId || !name) {
-        alert("社員番号と氏名を入力してください。");
-        return;
-      }
+  if (!employeeId || !name) {
+    alert("社員番号と氏名を入力してください。");
+    return;
+  }
 
-      for (let row of rows) {
-        const date = row.querySelector('input[type="date"]').value;
-        const time = row.querySelector('select').value;
-        const reason = row.querySelector('input[type="text"]').value.trim();
+  for (let row of rows) {
+    const date = row.querySelector('input[type="date"]').value;
+    const time = row.querySelector('select').value;
+    const reason = row.querySelector('input[type="text"]').value.trim();
 
-        if (!date || !reason) {
-          alert("日付と理由はすべての行で入力が必要です。");
-          return;
-        }
+    if (!date || !reason) {
+      alert("日付と理由はすべての行で入力が必要です。");
+      return;
+    }
 
-        leaveList.push({ date, time, reason });
-      }
+    leaveList.push({ date, time, reason });
+  }
 
-      // GASのURLに差し替えてください（↓ここを変更）
-      const GAS_URL = "https://script.google.com/macros/s/AKfycbz3AarI_rUd2eOpQYwXQzm7GfLmzIO4xKbmdjPuBWLVWruZqaPjmhL9yz7wiSrrxuzMGw/exec";
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbzh88gqfQeJDw2EgxLEKYT3AzYarcqnv8hu2EN5gwRSznxmjQPZt23FIyIfLt8-gIEryw/exec";
 
-      fetch(GAS_URL, {
-        method: "POST",
-        body: payload,
-    mode: "no-cors" // 重要！
+  // フォームデータ形式で送信
+  const payload = new URLSearchParams();
+  payload.append("employeeId", employeeId);
+  payload.append("name", name);
+  payload.append("email", email);
+  payload.append("leaveList", JSON.stringify(leaveList));
+
+  fetch(GAS_URL, {
+    method: "POST",
+    body: payload,
+    mode: "no-cors" // ←これでプリフライトを避ける
   });
-          alert("申請を送信しました！");
-          window.location.reload(); // 送信後リセット
-        })
+
+  alert("申請を送信しました（レスポンスは取得できません）");
+  window.location.reload();
+}
         .catch(err => {
           console.error(err);
           alert("送信に失敗しました。");
